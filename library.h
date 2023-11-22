@@ -1,0 +1,6 @@
+#ifndef CLIONPROJECTS_LIBRARY_H
+#define CLIONPROJECTS_LIBRARY_H
+
+void hello(void);
+
+#endif //CLIONPROJECTS_LIBRARY_H
