@@ -1,7 +1,7 @@
 #include "header.h"
 
 // nous souhaitons récupérer les données des fichiers
-t_sommet recuperer__info_sommet(char* info_identifiant){
+t_sommet recuperer_info_sommet(char* info_identifiant){
     t_sommet info_sommet;
     char* chaine_temporaire = malloc ( 100* sizeof (char)); // allocation dynamique
 
@@ -12,7 +12,7 @@ t_sommet recuperer__info_sommet(char* info_identifiant){
     strcat(chaine_temporaire, "/");
     strcat(chaine_temporaire, "precedences"); // ajoute le fait qu'il s'agit d'une précédence dans la chaine temporaire
     strcat(chaine_temporaire, ".txt");
-    info_sommet.precedences = remplir_sommet(chaine_temporaire, info_sommet.nbr_total_precedences, 0); /** modifier les paramètres **/
+    info_sommet.precedences = remplir_sommet(chaine_temporaire, &(info_sommet.nbr_total_precedences), 0); /** modifier les paramètres **/
 
     // Chargement des données d'opération
     strcat(chaine_temporaire, info_identifiant);
@@ -20,7 +20,7 @@ t_sommet recuperer__info_sommet(char* info_identifiant){
     strcat(chaine_temporaire, "/");
     strcat(chaine_temporaire, "operations");
     strcat(chaine_temporaire, ".txt");
-    info_sommet.operations = remplir_sommet(chaine_temporaire, info_sommet.nbr_total_operations, 0); /** modifier les paramètres **/
+    info_sommet.operations = remplir_sommet(chaine_temporaire, &(info_sommet.nbr_total_operations), 0); /** modifier les paramètres **/
 
     // Chargement des données d'exclusions
     strcat(chaine_temporaire, info_identifiant);
@@ -28,7 +28,7 @@ t_sommet recuperer__info_sommet(char* info_identifiant){
     strcat(chaine_temporaire, "/");
     strcat(chaine_temporaire, "exclusions");
     strcat(chaine_temporaire, ".txt");
-    info_sommet.operations = remplir_sommet(chaine_temporaire, info_sommet.nbr_total_exclusions, 1); /** modifier les paramètres **/
+    info_sommet.operations = remplir_sommet(chaine_temporaire, &(info_sommet.nbr_total_exclusions), 1); /** modifier les paramètres **/
 
     // Chargement du temps de cycle
     strcat(chaine_temporaire, info_identifiant);
