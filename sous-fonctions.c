@@ -1,69 +1,87 @@
 #include "header.h"
 
-// nous souhaitons récupérer les données des fichiers
-t_sommet recuperer_info_sommet(char* info_identifiant){
-    t_sommet info_sommet;
-    char* chaine_temporaire = malloc ( 100* sizeof (char)); // allocation dynamique
 
+t_sommet recuperer_info_sommet(char* info_identifiant) {
+    t_sommet info_sommet;
+    char chaine_temporaire[100];
 
     // Chargement des données de précédence
-    strcat(chaine_temporaire, info_identifiant); // ajoute l'identifiant dans la chaine temporaire
-    strcpy(chaine_temporaire, "../fichiers_ressources/"); // ajoute le contenu du fichier dans la chaine temporaire
-    strcat(chaine_temporaire, "/");
-    strcat(chaine_temporaire, "precedences"); // ajoute le fait qu'il s'agit d'une précédence dans la chaine temporaire
-    strcat(chaine_temporaire, ".txt");
-    info_sommet.precedences = remplir_sommet(chaine_temporaire, &(info_sommet.nbr_total_precedences), 0); /** modifier les paramètres **/
+    sprintf(chaine_temporaire, "../fichiers_ressources/%s/precedences.txt", info_identifiant);
+    info_sommet.precedences = remplir_sommet(chaine_temporaire, &(info_sommet.nbr_total_precedences), 0);
 
     // Chargement des données d'opération
-    strcat(chaine_temporaire, info_identifiant);
-    strcpy(chaine_temporaire, "../fichiers_ressources/");
-    strcat(chaine_temporaire, "/");
-    strcat(chaine_temporaire, "operations");
-    strcat(chaine_temporaire, ".txt");
-    info_sommet.operations = remplir_sommet(chaine_temporaire, &(info_sommet.nbr_total_operations), 0); /** modifier les paramètres **/
+    sprintf(chaine_temporaire, "../fichiers_ressources/%s/operations.txt", info_identifiant);
+    info_sommet.operations = remplir_sommet(chaine_temporaire, &(info_sommet.nbr_total_operations), 0);
 
     // Chargement des données d'exclusions
-    strcat(chaine_temporaire, info_identifiant);
-    strcpy(chaine_temporaire, "../fichiers_ressources/");
-    strcat(chaine_temporaire, "/");
-    strcat(chaine_temporaire, "exclusions");
-    strcat(chaine_temporaire, ".txt");
-    info_sommet.operations = remplir_sommet(chaine_temporaire, &(info_sommet.nbr_total_exclusions), 1); /** modifier les paramètres **/
+
+    sprintf(chaine_temporaire, "../fichiers_ressources/%s/exclusions.txt", info_identifiant);
+    info_sommet.exclusions = remplir_sommet(chaine_temporaire, &(info_sommet.nbr_total_exclusions), 1);
 
     // Chargement du temps de cycle
-    strcat(chaine_temporaire, info_identifiant);
-    strcpy(chaine_temporaire, "../fichiers_ressources/");
-    strcat(chaine_temporaire, "/");
-    strcat(chaine_temporaire, "temps_cycle");
-    strcat(chaine_temporaire, ".txt");
-    FILE* fichier = fopen(chaine_temporaire, "rw+");
-    if (!feof(fichier)) //feof est la fin du fichier
-        fscanf(fichier, "%d\n", &(info_sommet.temps_operation));
-    info_sommet.temps_operation *= 1000; // on multiplie par 1000 afin de ne pas avoir de float
+    sprintf(chaine_temporaire, "../fichiers_ressources/%s/temps_cycle.txt", info_identifiant);
+    FILE* fichier = fopen(chaine_temporaire, "r");
+    if (fichier == NULL) {
+        fprintf(stderr, "Erreur lors de l'ouverture du fichier %s\n", chaine_temporaire);
+        exit(EXIT_FAILURE);
+    }
+
+    if (!feof(fichier)) {
+        fscanf(fichier, "%d", &(info_sommet.temps_operation));
+        info_sommet.temps_operation *= 1000; // on multiplie par 1000 afin de ne pas avoir de float
+    }
+
     fclose(fichier);
+
+    return info_sommet;
 }
 
-
-int** remplir_sommet(char* nom_fichier, int* total, int condition){
-
-    FILE* fichier = fopen(nom_fichier, "rw+");
-    *total = 0;
-    int** tableau = malloc(sizeof(int*) );
-    while(!feof(fichier)){
-        tableau = realloc(tableau, (*total + 1) * sizeof(int*) );
-        tableau[*total] = malloc(10 * sizeof(int) );
-        if(condition) {
-            double variable_temporaire = 0.001;
-            fscanf(fichier, "%d %lf\n", &(tableau[*total][0]), &(variable_temporaire));
-            tableau[*total][1] = (int) (variable_temporaire * 1000);
-        }
-        else{
-            fscanf(fichier, "%d %d\n", &(tableau[*total][0]), &(tableau[*total][1]));
-        }
-        (*total)++; // incrémentation
+int** remplir_sommet(char* nom_fichier, int* total, int condition) {
+    FILE* fichier = fopen(nom_fichier, "r");
+    if (fichier == NULL) {
+        fprintf(stderr, "Erreur lors de l'ouverture du fichier %s\n", nom_fichier);
+        exit(EXIT_FAILURE);
     }
+
+    *total = 0;
+    int** tableau = NULL;
+    while (fscanf(fichier, "%d", &(tableau[*total][0])) != EOF) {
+        tableau = realloc(tableau, (*total + 1) * sizeof(int*)); //  agrandit d'une ligne
+        tableau[*total] = malloc(2 * sizeof(int)); // agrandit de deux colonnes
+
+        if (condition == 1) {
+            double variable_temporaire = 0.001;
+            fscanf(fichier, "%lf", &variable_temporaire);
+            tableau[*total][1] = (int)(variable_temporaire * 1000);
+        } else {
+            fscanf(fichier, "%d", &(tableau[*total][1]));
+        }
+
+        (*total)++;
+    }
+
     fclose(fichier);
     return tableau;
-
 }
 
+void afficher_sommet (t_sommet info_sommet){
+
+    printf("Precedences :\n");
+    for(int i = 0; i < info_sommet.nbr_total_precedences; i++){
+        printf("%d :\t%d\t%d\n", i, info_sommet.precedences[i][0], info_sommet.precedences[i][1]);
+    }
+    printf("\n");
+
+    printf("Exclusions :\n");
+    for(int i = 0; i < info_sommet.nbr_total_exclusions; i++){
+        printf("%d :\t%d\t%d\n", i, info_sommet.exclusions[i][0], info_sommet.exclusions[i][1]);
+    }
+    printf("\n");
+
+    printf("Operations :\n");
+    for(int i = 0; i < info_sommet.nbr_total_operations; i++){
+        printf("%d :\t%d\t%d\n", i, info_sommet.operations[i][0],info_sommet.operations[i][1]);
+    }
+    printf("\nTemps operations : \n");
+    printf("%d\n", info_sommet.temps_operation);
+}

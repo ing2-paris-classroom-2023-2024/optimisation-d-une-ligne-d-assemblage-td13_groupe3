@@ -43,4 +43,6 @@ typedef struct tache{
 
 
 int** remplir_sommet();
+void afficher_sommet (t_sommet info_sommet);
+void liberer_memoire ( t_sommet info_sommet);
 #endif //ECELECAR_HEADER_H
