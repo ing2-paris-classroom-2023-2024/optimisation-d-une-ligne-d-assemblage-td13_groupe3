@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct sommet {
 
@@ -39,4 +40,7 @@ typedef struct tache{
 
 }t_tache;
 
+
+
+int** remplir_sommet();
 #endif //ECELECAR_HEADER_H

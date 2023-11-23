@@ -3,4 +3,4 @@ project(ecelecar C)
 
 set(CMAKE_C_STANDARD 23)
 
-add_executable(ecelecar main.c header.h)
+add_executable(ecelecar main.c header.h sous_fonctions.cpp sous-fonctions.c)
