@@ -47,3 +47,28 @@ t_sommet recuperer__info_sommet(char* info_identifiant){
     info_sommet.temps_operation *= 1000; // on multiplie par 1000 afin de ne pas avoir de float
     fclose(fichier);
 }
+
+
+int** remplir_sommet(char* nom_fichier, int* total, int condition){
+
+    FILE* fichier = fopen(nom_fichier, "rw+");
+    *total = 0;
+    int** tableau = (int**) malloc(sizeof(int*) );
+    while(!feof(fichier)){
+        tableau = (int**) realloc(tableau, (*total + 1) * sizeof(int*) );
+        tableau[*total] = (int*) malloc(10 * sizeof(int) );
+        if(condition) {
+            double variable_temporaire = 0.001;
+            fscanf(fichier, "%d %lf\n", &(tableau[*total][0]), &(variable_temporaire));
+            tableau[*total][1] = (int) (variable_temporaire * 1000);
+        }
+        else{
+            fscanf(fichier, "%d %d\n", &(tableau[*total][0]), &(tableau[*total][1]));
+        }
+        (*total)++; // incrémentation
+    }
+    fclose(fichier);
+    return tableau;
+
+}
+
