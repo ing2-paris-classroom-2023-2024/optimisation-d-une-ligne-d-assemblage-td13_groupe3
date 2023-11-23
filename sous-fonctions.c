@@ -1,12 +1,9 @@
-//
-// Created by alang on 23/11/2023.
-//
 #include "header.h"
 
 // nous souhaitons récupérer les données des fichiers
 t_sommet recuperer__info_sommet(char* info_identifiant){
     t_sommet info_sommet;
-    char* chaine_temporaire = (char*) malloc ( 100* sizeof (char)); // allocation dynamique
+    char* chaine_temporaire = malloc ( 100* sizeof (char)); // allocation dynamique
 
 
     // Chargement des données de précédence
@@ -53,10 +50,10 @@ int** remplir_sommet(char* nom_fichier, int* total, int condition){
 
     FILE* fichier = fopen(nom_fichier, "rw+");
     *total = 0;
-    int** tableau = (int**) malloc(sizeof(int*) );
+    int** tableau = malloc(sizeof(int*) );
     while(!feof(fichier)){
-        tableau = (int**) realloc(tableau, (*total + 1) * sizeof(int*) );
-        tableau[*total] = (int*) malloc(10 * sizeof(int) );
+        tableau = realloc(tableau, (*total + 1) * sizeof(int*) );
+        tableau[*total] = malloc(10 * sizeof(int) );
         if(condition) {
             double variable_temporaire = 0.001;
             fscanf(fichier, "%d %lf\n", &(tableau[*total][0]), &(variable_temporaire));
