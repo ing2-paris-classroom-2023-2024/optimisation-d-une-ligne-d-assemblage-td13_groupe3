@@ -85,3 +85,20 @@ void afficher_sommet (t_sommet info_sommet){
     printf("\nTemps operations : \n");
     printf("%d\n", info_sommet.temps_operation);
 }
+
+
+void liberer_memoire ( t_sommet info_sommet){
+    for(int i = 0; i < info_sommet.nbr_total_precedences; i++){
+        free(info_sommet.precedences[i]); // on libère la mémoire des colonnes de chaque ligne
+    }
+    free(info_sommet.precedences); // on libère la mémoire de chaque ligne
+
+    for(int i = 0; i < info_sommet.nbr_total_exclusions; i++){
+        free(info_sommet.exclusions[i]);
+    }
+    free(info_sommet.exclusions);
+    for(int i = 0; i < info_sommet.nbr_total_operations; i++){
+        free(info_sommet.operations[i]);
+    }
+    free(info_sommet.operations);
+}
