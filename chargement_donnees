@@ -1,0 +1,28 @@
+DATAS SCANDATAS(char* jeu_donnees){
+    //      -- FONCTION DE CHARGEMENT DES DONNEES
+    //      JEU_DONNEES : Numéro du jeu de données
+    //      || RETURN :     Structure de valeurs
+
+    char* temp = (char*) malloc( 50*sizeof(char) );
+    DATAS datas;
+
+    printf("SCAN1\n");
+    strcpy(temp, "../fichiers_ressources/"); strcat(temp, jeu_donnees); strcat(temp, "/"); strcat(temp, "exclusions"); strcat(temp, ".txt");
+    datas.EXCLUSIONS = FILLDATAS(temp, &(datas.EXCLUSIONS_TOT), 0);
+
+    printf("SCAN2\n");
+    strcpy(temp, "../fichiers_ressources/"); strcat(temp, jeu_donnees); strcat(temp, "/"); strcat(temp, "precedences"); strcat(temp, ".txt");
+    datas.PRECEDENCES = FILLDATAS(temp, &(datas.PRECEDENCES_TOT), 0);
+
+    printf("SCAN3\n");
+    strcpy(temp, "../fichiers_ressources/"); strcat(temp, jeu_donnees); strcat(temp, "/"); strcat(temp, "operations"); strcat(temp, ".txt");
+    datas.OPERATIONS = FILLDATAS(temp, &(datas.OPERATIONS_TOT), 1);
+
+    strcpy(temp, "../fichiers_ressources/"); strcat(temp, jeu_donnees); strcat(temp, "/"); strcat(temp, "temps_cycle"); strcat(temp, ".txt");
+    FILE* fichier = fopen(temp, "rw+");
+    if(!feof(fichier)) fscanf(fichier, "%d\n", &(datas.TCYCLE));
+    datas.TCYCLE *= 1000;
+    fclose(fichier);
+
+    return datas;
+}
