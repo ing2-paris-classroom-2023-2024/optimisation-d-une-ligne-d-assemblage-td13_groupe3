@@ -37,38 +37,7 @@ t_sommet recuperer_info_sommet(char* info_identifiant) {
 
     return info_sommet;
 }
-/*
-int** remplir_sommet(char* nom_fichier, int* total, int condition) {
-    FILE* fichier = fopen(nom_fichier, "r");
 
-    if (fichier == NULL) {
-        fprintf(stderr, "Erreur lors de l'ouverture du fichier %s\n", nom_fichier);
-        exit(EXIT_FAILURE);
-    }
-
-    *total = 0;
-    int** tableau = malloc(100* sizeof(int*));
-
-
-    while ( !feof(fichier) {
-        tableau = realloc(tableau, (*total + 1) * sizeof(int*)); //  agrandit d'une ligne
-        tableau[*total] = malloc(2 * sizeof(int)); // agrandit de deux colonnes
-
-
-        if (condition == 1) {
-            double variable_temporaire = 0.001;
-            fscanf(fichier, "%lf", &variable_temporaire);
-            tableau[*total][1] = (int)(variable_temporaire * 1000);
-        } else {
-            fscanf(fichier, "%d", &(tableau[*total][1]));
-        }
-
-
-        (*total)++;
-    }
-    fclose(fichier);
-    return tableau;
-}*/
 int** remplir_sommet(char* nom_fichier, int* total, int condition_int_float){
     FILE* fichier = fopen(nom_fichier, "rw+");
     *total = 0;
