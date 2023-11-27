@@ -1,6 +1,8 @@
 #include "header.h"
 
 int main() {
-    printf("Hello, Worrld!\n");
+    char* info_identifiant = "01";
+    t_sommet sommet = recuperer_info_sommet(info_identifiant);
+    afficher_sommet(sommet);
     return 0;
 }
