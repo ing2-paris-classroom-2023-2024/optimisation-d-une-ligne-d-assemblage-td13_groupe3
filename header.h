@@ -30,9 +30,9 @@ typedef struct tache{
 
     int identifiant;
     int poids;
-    struct tache** taches_suivantes;
+    struct tache** taches_exclusions;
     struct tache** taches_precedentes;
-    int nbr_total_taches_suivantes;
+    int nbr_total_taches_exclusions;
     int nbr_total_taches_precedentes;
 
 }t_tache;
@@ -41,9 +41,12 @@ typedef struct tache{
 t_sommet recuperer_info_sommet(char* info_identifiant);
 int** remplir_sommet();
 void afficher_sommet (t_sommet info_sommet);
-void liberer_memoire ( t_sommet info_sommet);
+void liberer_memoire_sommet ( t_sommet info_sommet);
 
 
+t_station tri_station(t_sommet info_sommet);
+void afficher_station (t_station info_station);
+void liberer_memoire_station (t_station info_station);
 
 
 #endif //ECELECAR_HEADER_H

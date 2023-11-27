@@ -6,7 +6,6 @@ t_sommet recuperer_info_sommet(char* info_identifiant) {
 
     // Chargement des données de précédence
     sprintf(chaine_temporaire, "../fichiers_ressources/01/precedences.txt");
-    printf("%s", chaine_temporaire);
     info_sommet.precedences = remplir_sommet(chaine_temporaire, &(info_sommet.nbr_total_precedences), 0);
 
     // Chargement des données d'opération
@@ -14,7 +13,6 @@ t_sommet recuperer_info_sommet(char* info_identifiant) {
     info_sommet.operations = remplir_sommet(chaine_temporaire, &(info_sommet.nbr_total_operations), 1);
 
     // Chargement des données d'exclusions
-
     sprintf(chaine_temporaire, "../fichiers_ressources/01/exclusions.txt");
     info_sommet.exclusions = remplir_sommet(chaine_temporaire, &(info_sommet.nbr_total_exclusions), 1);
 
@@ -32,9 +30,7 @@ t_sommet recuperer_info_sommet(char* info_identifiant) {
         info_sommet.temps_operation *= 1000; // on multiplie par 1000 afin de ne pas avoir de float
     }
 
-
     fclose(fichier);
-
     return info_sommet;
 }
 
@@ -71,6 +67,7 @@ void afficher_sommet (t_sommet info_sommet){
 
     printf("Exclusions :\n");
     for(int i = 0; i < info_sommet.nbr_total_exclusions; i++){
+        info_sommet.exclusions[i][1]=info_sommet.exclusions[i][1]/1000;
         printf("%d :\t%d\t%d\n", i, info_sommet.exclusions[i][0], info_sommet.exclusions[i][1]);
     }
     printf("\n");
@@ -84,7 +81,7 @@ void afficher_sommet (t_sommet info_sommet){
 }
 
     
-void liberer_memoire ( t_sommet info_sommet){
+void liberer_memoire_sommet ( t_sommet info_sommet){
     for(int i = 0; i < info_sommet.nbr_total_precedences; i++){
         free(info_sommet.precedences[i]); // on libère la mémoire des colonnes de chaque ligne
     }
@@ -100,3 +97,104 @@ void liberer_memoire ( t_sommet info_sommet){
     free(info_sommet.operations);
 }
 
+
+
+t_station tri_station(t_sommet info_sommet){
+    t_station info_station;
+    info_station.nbr_taches_total = 0;
+    printf("Nombre total d'operations : %d",info_sommet.nbr_total_operations );
+    info_station.tache = malloc (info_station.nbr_taches_total * sizeof(info_station));
+    for(int i = 0; i < info_sommet.nbr_total_operations; i++){
+        info_station.tache = realloc(info_station.tache, (info_station.nbr_taches_total+500)*sizeof(info_station) );
+        info_station.tache[info_station.nbr_taches_total].identifiant = info_sommet.operations[i][0];
+        info_station.tache[info_station.nbr_taches_total].poids = info_sommet.operations[i][1];
+        info_station.tache[info_station.nbr_taches_total].nbr_total_taches_precedentes = 0;
+        info_station.tache[info_station.nbr_taches_total].taches_precedentes = malloc( info_station.tache[info_station.nbr_taches_total].nbr_total_taches_precedentes*sizeof(info_station));
+        info_station.tache[info_station.nbr_taches_total].nbr_total_taches_exclusions = 0;
+        info_station.tache[info_station.nbr_taches_total].taches_exclusions = malloc( info_station.tache[info_station.nbr_taches_total].nbr_total_taches_exclusions*sizeof(info_station));
+        info_station.nbr_taches_total++;
+    }
+    info_station.temps_operation = info_sommet.temps_operation;
+
+
+
+    //Ajout des exclusions
+    for(int i = 0; i < info_sommet.nbr_total_exclusions; i++){
+        t_tache* sommet_lu[2];
+
+        for(int j = 0; j < info_station.nbr_taches_total; j++){
+            if(info_sommet.exclusions[i][0] == info_station.tache[j].identifiant){
+                sommet_lu[0] = &(info_station.tache[j]);
+            }
+        }
+        for(int j = 0; j < info_station.nbr_taches_total; j++){
+            if(info_sommet.exclusions[i][1] == info_station.tache[j].identifiant){
+                sommet_lu[1] = &(info_station.tache[j]);
+            }
+        }
+
+        sommet_lu[0]->taches_exclusions = realloc(sommet_lu[0]->taches_exclusions, (sommet_lu[0]-> nbr_total_taches_exclusions + 1) * sizeof(t_tache ));
+        sommet_lu[0]->taches_exclusions[sommet_lu[0]->nbr_total_taches_exclusions] = sommet_lu[1];
+        sommet_lu[0]->nbr_total_taches_exclusions++;
+        sommet_lu[1]->taches_exclusions= realloc(sommet_lu[1]->taches_exclusions, (sommet_lu[1]-> nbr_total_taches_exclusions + 1) * sizeof(t_tache ));
+
+        sommet_lu[1]->taches_exclusions[sommet_lu[1]->nbr_total_taches_exclusions] = sommet_lu[0];
+        sommet_lu[1]->nbr_total_taches_exclusions++;
+
+    }
+
+    printf("\nnbr total precedences : %d", info_sommet.nbr_total_precedences);
+
+    // Ajout des précédences
+    for(int i = 0; i < info_sommet.nbr_total_precedences; i++){
+        printf("\n %d ok1", i);
+
+        t_tache * sommet_lu[2];
+        for(int j = 0; j < info_station.nbr_taches_total; j++){
+            if(info_sommet.precedences[i][0] == info_station.tache[j].identifiant){
+                sommet_lu[0] = &(info_station.tache[j]);
+            }
+        }
+        for(int j = 0; j < info_station.nbr_taches_total; j++){
+            if(info_sommet.precedences[i][1] == info_station.tache[j].identifiant){
+                sommet_lu[1] = &(info_station.tache[j]);
+            }
+        }
+
+        printf("\tok2");
+
+        sommet_lu[1]->taches_precedentes =realloc(sommet_lu[0]->taches_precedentes, (sommet_lu[0]->nbr_total_taches_precedentes + 100000) * sizeof(t_tache));
+        printf("\tok3");
+
+        sommet_lu[1]->taches_precedentes[sommet_lu[0]->nbr_total_taches_precedentes] = sommet_lu[1];
+        sommet_lu[1]->nbr_total_taches_precedentes++;
+        printf("\tok4");
+
+    }
+    printf("\tok5");
+
+}
+void afficher_station (t_station info_station){
+    printf("\nTache (Nombre de taches total : %d) :\n", info_station.nbr_taches_total);
+    for(int i = 0; i < info_station.nbr_taches_total; i++){
+        printf("   Tache n°%d :\n", info_station.tache[i].identifiant);
+        printf("   Précédents (PTOT : %d) : ", info_station.tache[i].nbr_total_taches_precedentes);
+        for(int j = 0; j < info_station.tache[i].nbr_total_taches_precedentes; j++){
+            printf("%d, ", info_station.tache[i].taches_precedentes[j]->identifiant);
+        }
+        printf("\n");
+        printf("   Exclusions (Nombre d'exclusions total : %d) : ", info_station.tache[i].nbr_total_taches_exclusions);
+        for(int j = 0; j < info_station.tache[i].nbr_total_taches_exclusions; j++){
+            printf("%d, ", info_station.tache[i].taches_exclusions[j]->identifiant);
+        }
+        printf("\n");
+    }
+
+}
+void liberer_memoire_station (t_station info_station){
+    for(int i = 0; i < info_station.nbr_taches_total; i++){
+        free(info_station.tache[i].taches_precedentes);
+        free(info_station.tache[i].taches_exclusions);
+
+    }
+}
