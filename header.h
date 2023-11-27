@@ -1,6 +1,3 @@
-//
-// Created by alang on 22/11/2023.
-//
 
 #ifndef ECELECAR_HEADER_H
 #define ECELECAR_HEADER_H
@@ -41,7 +38,7 @@ typedef struct tache{
 }t_tache;
 
 
-
+t_sommet recuperer_info_sommet(char* info_identifiant);
 int** remplir_sommet();
 void afficher_sommet (t_sommet info_sommet);
 void liberer_memoire ( t_sommet info_sommet);
