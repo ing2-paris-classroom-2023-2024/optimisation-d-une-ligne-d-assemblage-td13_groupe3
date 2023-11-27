@@ -101,7 +101,7 @@ t_station info_station_tache (t_sommet info_sommet){
     t_station info_station;
 
     info_station.nbr_taches_total = 0;
-    printf("Nombre total d'operations : %d",info_sommet.nbr_total_operations );
+    printf("Nombre total d'operations : %d\n",info_sommet.nbr_total_operations );
     info_station.tache = (t_tache*) malloc (info_station.nbr_taches_total * sizeof(t_tache));
     for(int i = 0; i < info_sommet.nbr_total_operations; i++){
         info_station.tache = realloc(info_station.tache, (info_station.nbr_taches_total+1)*sizeof(t_tache) );
@@ -199,4 +199,61 @@ void liberer_memoire_station (t_station info_station){
         free(info_station.tache[i].taches_exclusions);
 
     }
+}
+
+
+int* ordre_priorite(t_sommet* sommet, t_station* info_station) {
+    int* ordre = malloc(info_station->nbr_taches_total * sizeof(int));
+    int* visite = malloc(info_station->nbr_taches_total * sizeof(int));
+
+    for (int i = 0; i < info_station->nbr_taches_total; i++) {
+        visite[i] = 0;
+    }
+
+    int index_ordre = 0;
+
+    for (int i = 0; i < info_station->nbr_taches_total; i++) {
+        if (!visite[i]) {
+            dfs(info_station, i, visite, ordre, &index_ordre);
+        }
+    }
+
+    free(visite);
+    return ordre;
+}
+void dfs(t_station* info_station, int tache_actuelle, int* visite, int* ordre, int* index_ordre) {
+    visite[tache_actuelle] = 1;
+
+    for (int i = 0; i < info_station->tache[tache_actuelle].nbr_total_taches_precedentes; i++) {
+        int tache_precedente = info_station->tache[tache_actuelle].taches_precedentes[i]->identifiant;
+
+        if (!visite[tache_precedente]) {
+            dfs(info_station, tache_precedente, visite, ordre, index_ordre);
+        }
+    }
+
+    ordre[(*index_ordre)++] = tache_actuelle;
+}
+// Fonction pour afficher l'ordre des tâches
+void afficher_ordre(int* ordre, int taille) {
+    printf("Ordre des taches :\n");
+    for (int i = 0; i < taille; i++) {
+        printf("Tache %d\n", ordre[i]); // Ajouter 1 car les indices commencent à 0
+    }
+}
+
+// Fonction pour obtenir la tâche la plus prioritaire
+t_tache* tache_prioritaire(t_sommet* sommet, t_station* info_station) {
+    int* ordre = ordre_priorite(sommet, info_station);
+
+    if (ordre == NULL) {
+        fprintf(stderr, "Erreur : le graphe contient un cycle, impossible de déterminer la priorité.\n");
+        return NULL;
+    }
+
+    // La tâche la plus prioritaire est celle avec l'indice le plus bas dans l'ordre topologique
+    t_tache* tache_prioritaire = &(info_station->tache[ordre[0]]);
+
+    free(ordre);
+    return tache_prioritaire;
 }

@@ -48,5 +48,9 @@ t_station tri_station(t_sommet info_sommet);
 void afficher_station (t_station info_station);
 void liberer_memoire_station (t_station info_station);
 
+int* ordre_priorite(t_sommet* info_sommet, t_station* info_station);
+void dfs(t_station* info_station, int tache_actuelle, int* visite, int* ordre, int* index_ordre);
+void afficher_ordre(int* ordre, int taille);
+t_tache* tache_prioritaire(t_sommet* sommet,t_station* info_station);
 
 #endif //ECELECAR_HEADER_H
