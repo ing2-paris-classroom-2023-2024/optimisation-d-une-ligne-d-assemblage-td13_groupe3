@@ -99,4 +99,4 @@ void liberer_memoire ( t_sommet info_sommet){
     }
     free(info_sommet.operations);
 }
-
+/*mlnefbvdsfjkl*/
