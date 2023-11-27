@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.3)
 project(ecelecar C)
 
 set(CMAKE_C_STANDARD 23)
 
-add_executable(ecelecar main.c header.h sous_fonctions.cpp sous-fonctions.c)
+add_executable(ecelecar main.c header.h sous-fonctions.c)

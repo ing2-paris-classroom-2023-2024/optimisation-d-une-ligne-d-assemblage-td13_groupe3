@@ -86,7 +86,7 @@ void afficher_sommet (t_sommet info_sommet){
     printf("%d\n", info_sommet.temps_operation);
 }
 
-
+    
 void liberer_memoire ( t_sommet info_sommet){
     for(int i = 0; i < info_sommet.nbr_total_precedences; i++){
         free(info_sommet.precedences[i]); // on libère la mémoire des colonnes de chaque ligne
