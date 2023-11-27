@@ -71,6 +71,7 @@ void afficher_sommet (t_sommet info_sommet){
 
     printf("Exclusions :\n");
     for(int i = 0; i < info_sommet.nbr_total_exclusions; i++){
+        info_sommet.exclusions[i][1]=info_sommet.exclusions[i][1]/1000;
         printf("%d :\t%d\t%d\n", i, info_sommet.exclusions[i][0], info_sommet.exclusions[i][1]);
     }
     printf("\n");
@@ -100,3 +101,9 @@ void liberer_memoire ( t_sommet info_sommet){
     free(info_sommet.operations);
 }
 
+/*sous programme qui retourne le sommet prioritaire*/
+void sommet_prioritaire (t_sommet sommet){
+    for(int i = 0; i < sommet.nbr_total_precedences; i++){
+
+    }
+}
