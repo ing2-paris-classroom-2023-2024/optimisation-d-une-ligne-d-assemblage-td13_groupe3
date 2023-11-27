@@ -46,8 +46,6 @@ int** remplir_sommet(char* nom_fichier, int* total, int condition) {
         exit(EXIT_FAILURE);
     }
 
-
-
     *total = 0;
     int** tableau = malloc(100* sizeof(int*));
 
@@ -67,44 +65,31 @@ int** remplir_sommet(char* nom_fichier, int* total, int condition) {
 
 
         (*total)++;
-
-
-
     }
-    printf("???");
-
-
-
-
-
     fclose(fichier);
     return tableau;
 }*/
-int** remplir_sommet(char* fname, int* tot, int cond){
-    FILE* fichier = fopen(fname, "rw+");
-    *tot = 0;
-
-
-    int** tab = (int**) malloc( sizeof(int*) );
-
+int** remplir_sommet(char* nom_fichier, int* total, int condition_int_float){
+    FILE* fichier = fopen(nom_fichier, "rw+");
+    *total = 0;
+    int** tableau = malloc(sizeof(int*) );
 
     while(!feof(fichier)){
-        tab = (int**) realloc( tab, (*tot+1)*sizeof(int*) );
-
-        tab[*tot] = (int*) malloc( 2*sizeof(int) );
-        if(cond) {
+        tableau = realloc(tableau, (*total + 1) * sizeof(int*) );
+        tableau[*total] = malloc(2 * sizeof(int) );
+        if(condition_int_float) {
             double temp = 0.001;
-            fscanf(fichier, "%d %lf\n", &(tab[*tot][0]), &(temp));
-            tab[*tot][1] = (int) (temp * 1000);
+            fscanf(fichier, "%d %lf\n", &(tableau[*total][0]), &(temp));
+            tableau[*total][1] = (int) (temp * 1000);
         }
         else{
-            fscanf(fichier, "%d %d\n", &(tab[*tot][0]), &(tab[*tot][1]));
+            fscanf(fichier, "%d %d\n", &(tableau[*total][0]), &(tableau[*total][1]));
         }
-        (*tot)++;
+        (*total)++;
     }
     fclose(fichier);
     printf("\n");
-    return tab;
+    return tableau;
 }
 
 void afficher_sommet (t_sommet info_sommet){
