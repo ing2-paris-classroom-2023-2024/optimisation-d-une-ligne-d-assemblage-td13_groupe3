@@ -1,6 +1,5 @@
 #include "header.h"
 
-
 t_sommet recuperer_info_sommet(char* info_identifiant) {
     t_sommet info_sommet;
     char chaine_temporaire[100];
@@ -101,4 +100,9 @@ void liberer_memoire ( t_sommet info_sommet){
         free(info_sommet.operations[i]);
     }
     free(info_sommet.operations);
+}
+
+int main(){
+    char* info
+    
 }
