@@ -5,20 +5,20 @@ t_sommet recuperer_info_sommet(char* info_identifiant) {
     char* chaine_temporaire = malloc (100* sizeof(char));
 
     // Chargement des données de précédence
-    sprintf(chaine_temporaire, "../fichiers_ressources/01/precedences.txt");
+    sprintf(chaine_temporaire, "../base/precedences.txt");
     info_sommet.precedences = remplir_sommet(chaine_temporaire, &(info_sommet.nbr_total_precedences), 0);
 
     // Chargement des données d'opération
-    sprintf(chaine_temporaire, "../fichiers_ressources/01/operation.txt");
+    sprintf(chaine_temporaire, "../base/operation.txt");
     info_sommet.operations = remplir_sommet(chaine_temporaire, &(info_sommet.nbr_total_operations), 1);
 
     // Chargement des données d'exclusions
-    sprintf(chaine_temporaire, "../fichiers_ressources/01/exclusions.txt");
+    sprintf(chaine_temporaire, "../base/exclusions.txt");
     info_sommet.exclusions = remplir_sommet(chaine_temporaire, &(info_sommet.nbr_total_exclusions), 1);
 
 
     // Chargement du temps de cycle
-    sprintf(chaine_temporaire, "../fichiers_ressources/01/temps_cycle.txt");
+    sprintf(chaine_temporaire, "../base/temps_cycle.txt");
     FILE* fichier = fopen(chaine_temporaire, "r");
     if (fichier == NULL) {
         fprintf(stderr, "Erreur lors de l'ouverture du fichier %s\n", chaine_temporaire);
