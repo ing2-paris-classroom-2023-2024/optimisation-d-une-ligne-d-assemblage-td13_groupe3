@@ -101,9 +101,12 @@ void liberer_memoire ( t_sommet info_sommet){
     free(info_sommet.operations);
 }
 
+
+// Chargement de Données
+
+
 /*sous programme qui retourne le sommet prioritaire*/
 void sommet_prioritaire (t_sommet sommet){
     for(int i = 0; i < sommet.nbr_total_precedences; i++){
-
     }
 }
