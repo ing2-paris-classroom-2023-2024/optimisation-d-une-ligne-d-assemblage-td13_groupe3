@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 typedef struct sommet {
 
@@ -30,6 +31,7 @@ typedef struct tache{
 
     int identifiant;
     int poids;
+    bool visite;
     struct tache** taches_exclusions;
     struct tache** taches_precedentes;
     int nbr_total_taches_exclusions;
@@ -48,9 +50,9 @@ t_station tri_station(t_sommet info_sommet);
 void afficher_station (t_station info_station);
 void liberer_memoire_station (t_station info_station);
 
-int* ordre_priorite(t_sommet* info_sommet, t_station* info_station);
-void dfs(t_station* info_station, int tache_actuelle, int* visite, int* ordre, int* index_ordre);
-void afficher_ordre(int* ordre, int taille);
-t_tache* tache_prioritaire(t_sommet* sommet,t_station* info_station);
+
+void tri_topologique_recursif(t_tache* tache, int* index, t_tache** resultat);
+t_tache** tri_topologique(t_tache* taches, int nbr_taches, int* nbr_taches_triees);
+void trier_taches_selon_precedences(t_tache* taches, int nbr_taches);
 
 #endif //ECELECAR_HEADER_H

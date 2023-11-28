@@ -200,60 +200,55 @@ void liberer_memoire_station (t_station info_station){
 
     }
 }
+// Fonction de tri topologique récursive
+void tri_topologique_recursif(t_tache* tache, int* index, t_tache** resultat) {
+    // Marquer la tâche comme visitée
+    tache->visite = true;
 
-
-int* ordre_priorite(t_sommet* sommet, t_station* info_station) {
-    int* ordre = malloc(info_station->nbr_taches_total * sizeof(int));
-    int* visite = malloc(info_station->nbr_taches_total * sizeof(int));
-
-    for (int i = 0; i < info_station->nbr_taches_total; i++) {
-        visite[i] = 0;
-    }
-    ///info_station.tache[i].identifiant à récupérer (indice du sommet)
-    int index_ordre = 0;
-
-    for (int i = 0; i < info_station->nbr_taches_total; i++) {
-        if (!visite[i]) {
-            dfs(info_station, i, visite, ordre, &index_ordre);
+    // Parcourir les tâches précédentes et trier récursivement
+    for (int i = 0; i < tache->nbr_total_taches_precedentes; i++) {
+        if (!(tache->taches_precedentes[i]->visite)) {
+            tri_topologique_recursif(tache->taches_precedentes[i], index, resultat);
         }
     }
 
-    free(visite);
-    return ordre;
+    // Ajouter la tâche au résultat
+    resultat[*index] = tache;
+    (*index)++;
 }
-void dfs(t_station* info_station, int tache_actuelle, int* visite, int* ordre, int* index_ordre) {
-    visite[tache_actuelle] = 1;
 
-    for (int i = 0; i < info_station->tache[tache_actuelle].nbr_total_taches_precedentes; i++) {
-        int tache_precedente = info_station->tache[tache_actuelle].taches_precedentes[i]->identifiant;
+// Fonction de tri topologique principale
+t_tache** tri_topologique(t_tache* taches, int nbr_taches, int* nbr_taches_triees) {
+    t_tache** resultat = malloc(nbr_taches * sizeof(t_tache*));
+    *nbr_taches_triees = 0;
 
-        if (!visite[tache_precedente]) {
-            dfs(info_station, tache_precedente, visite, ordre, index_ordre);
+    // Initialiser les marques de visite
+    for (int i = 0; i < nbr_taches; i++) {
+        taches[i].visite = false;
+    }
+
+    // Parcourir toutes les tâches et déclencher le tri topologique si une tâche n'a pas été visitée
+    for (int i = 0; i < nbr_taches; i++) {
+        if (!taches[i].visite) {
+            tri_topologique_recursif(&taches[i], nbr_taches_triees, resultat);
         }
     }
 
-    ordre[(*index_ordre)++] = tache_actuelle;
-}
-// Fonction pour afficher l'ordre des tâches
-void afficher_ordre(int* ordre, int taille) {
-    printf("Ordre des taches :\n");
-    for (int i = 0; i < taille; i++) {
-        printf("Tache %d\n", ordre[i]); // Ajouter 1 car les indices commencent à 0
-    }
+    return resultat;
 }
 
-// Fonction pour obtenir la tâche la plus prioritaire
-t_tache* tache_prioritaire(t_sommet* sommet, t_station* info_station) {
-    int* ordre = ordre_priorite(sommet, info_station);
+// Fonction pour trier les tâches en fonction des précédences
+void trier_taches_selon_precedences(t_tache* taches, int nbr_taches) {
+    int nbr_taches_triees;
+    t_tache** resultat = tri_topologique(taches, nbr_taches, &nbr_taches_triees);
 
-    if (ordre == NULL) {
-        fprintf(stderr, "Erreur : le graphe contient un cycle, impossible de déterminer la priorité.\n");
-        return NULL;
+    // Afficher ou utiliser les tâches triées selon les précédences (exemple d'affichage)
+    printf("Taches triees en fonction des precedences :\n");
+    for (int i = 0; i < nbr_taches_triees; i++) {
+        printf("Tache numero %d\n", resultat[i]->identifiant);
     }
 
-    // La tâche la plus prioritaire est celle avec l'indice le plus bas dans l'ordre topologique
-    t_tache* tache_prioritaire = &(info_station->tache[ordre[0]]);
-
-    free(ordre);
-    return tache_prioritaire;
+    // Libérer la mémoire
+    free(resultat);
 }
+

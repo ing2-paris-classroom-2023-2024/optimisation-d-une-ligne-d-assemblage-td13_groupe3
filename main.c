@@ -7,10 +7,7 @@ int main() {
     t_station info_station = tri_station(sommet);
     printf("TESTETES");
     afficher_station(info_station);
-    int* ordre = ordre_priorite(&sommet, &info_station);
-    afficher_ordre(ordre, info_station.nbr_taches_total);
-
-    free(ordre);
+    trier_taches_selon_precedences(info_station.tache, info_station.nbr_taches_total);
     liberer_memoire_sommet(sommet);
     liberer_memoire_station ( info_station);
     return 0;
