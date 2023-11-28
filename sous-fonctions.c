@@ -209,7 +209,7 @@ int* ordre_priorite(t_sommet* sommet, t_station* info_station) {
     for (int i = 0; i < info_station->nbr_taches_total; i++) {
         visite[i] = 0;
     }
-
+    ///info_station.tache[i].identifiant à récupérer (indice du sommet)
     int index_ordre = 0;
 
     for (int i = 0; i < info_station->nbr_taches_total; i++) {
