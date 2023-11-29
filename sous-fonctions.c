@@ -251,6 +251,48 @@ void trier_taches_selon_precedences(t_tache* taches, int nbr_taches) {
     // Libérer la mémoire
     free(resultat);
 }
+
+// Fonction pour organiser les tâches dans des stations en respectant les contraintes d'exclusion
+void organiser_taches_dans_stations(t_tache** taches_triees, int nbr_taches_triees, t_station* stations, int* nbr_stations, t_sommet info_sommet) {
+    for (int i = 0; i < nbr_taches_triees; ++i) {
+        t_tache* tache = taches_triees[i];
+
+        // Trouver la station appropriée pour la tâche
+        int station_index = -1;
+        for (int j = 0; j < *nbr_stations; ++j) {
+            t_station* station = &stations[j];
+            bool ajout_possible = true;
+
+            // Vérifier les exclusions pour la tâche
+            for (int k = 0; k < tache->nbr_total_taches_exclusions; ++k) {
+                t_tache* exclusion = tache->taches_exclusions[k];
+                for (int l = 0; l < station->nbr_taches_total; ++l) {
+                    if (exclusion->identifiant == station->tache[l].identifiant) {
+                        ajout_possible = false;
+                        break;
+                    }
+                }
+            }
+            if (ajout_possible) {
+                station_index = j;
+                break;
+            }
+        }
+        // Si aucune station n'est trouvée, créer une nouvelle station
+        if (station_index == -1) {
+            t_station nouvelle_station = info_station_tache(info_sommet);
+            stations[*nbr_stations] = nouvelle_station;
+            station_index = (*nbr_stations);
+            (*nbr_stations)++;
+        }
+        // Ajouter la tâche à la station trouvée
+        t_tache* tache_station = &stations[station_index].tache[stations[station_index].nbr_taches_total];
+        *tache_station = *tache;
+        stations[station_index].nbr_taches_total++;
+    }
+}
+
+/*
 // Fonction pour trouver la station appropriée pour une tâche en tenant compte des exclusions
 t_station* trouver_station_appropriee(t_tache* tache, t_station* stations, int nbr_stations) {
     for (int i = 0; i < nbr_stations; i++) {
@@ -301,4 +343,4 @@ void assigner_taches_aux_stations(t_tache** taches_triees, int nbr_taches_triees
             printf("La tâche %d doit attendre une station disponible.\n", tache->identifiant);
         }
     }
-}
+}*/
