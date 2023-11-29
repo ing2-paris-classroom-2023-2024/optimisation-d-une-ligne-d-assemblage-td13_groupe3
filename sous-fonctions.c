@@ -251,4 +251,30 @@ void trier_taches_selon_precedences(t_tache* taches, int nbr_taches) {
     // Libérer la mémoire
     free(resultat);
 }
+// Fonction pour trouver la station appropriée pour une tâche en tenant compte des exclusions
+t_station* trouver_station_appropriee(t_tache* tache, t_station* stations, int nbr_stations) {
+    for (int i = 0; i < nbr_stations; i++) {
+        // Vérifier si la station i peut accueillir la tâche
+        bool peut_acceuillir = true;
 
+        // Vérifier les exclusions avec les tâches déjà présentes dans la station i
+        for (int j = 0; j < stations[i].nbr_taches_total; j++) {
+            t_tache* tache_station = &(stations[i].tache[j]);
+
+            for (int k = 0; k < tache->nbr_total_taches_exclusions; k++) {
+                if (tache->taches_exclusions[k] == tache_station || tache_station->taches_exclusions[k] == tache) {
+                    // La station i ne peut pas accueillir la tâche
+                    peut_acceuillir = false;
+                    break;
+                }
+            }
+            if (!peut_acceuillir) {
+                break;
+            }
+        }
+        if (peut_acceuillir) {
+            return &stations[i];
+        }
+    }
+    return NULL;
+}
