@@ -278,3 +278,27 @@ t_station* trouver_station_appropriee(t_tache* tache, t_station* stations, int n
     }
     return NULL;
 }
+
+
+// Fonction pour assigner les tâches aux stations
+void assigner_taches_aux_stations(t_tache** taches_triees, int nbr_taches_triees, t_station* stations, int nbr_stations) {
+    for (int i = 0; i < nbr_taches_triees; i++) {
+        t_tache* tache = taches_triees[i];
+
+        // Trouver la station appropriée pour la tâche
+        t_station* station_appropriee = trouver_station_appropriee(tache, stations, nbr_stations);
+
+        if (station_appropriee != NULL) {
+            // Ajouter la tâche à la station appropriée
+            station_appropriee->tache = realloc(station_appropriee->tache, (station_appropriee->nbr_taches_total + 1) * sizeof(t_tache));
+            station_appropriee->tache[station_appropriee->nbr_taches_total] = *tache;
+            station_appropriee->nbr_taches_total++;
+
+            // Afficher un message indiquant l'ajout de la tâche à la station
+            printf("La tâche %d a été ajoutée à la station %d.\n", tache->identifiant, station_appropriee - stations + 1);
+        } else {
+            // Aucune station n'est disponible, la tâche doit attendre
+            printf("La tâche %d doit attendre une station disponible.\n", tache->identifiant);
+        }
+    }
+}
