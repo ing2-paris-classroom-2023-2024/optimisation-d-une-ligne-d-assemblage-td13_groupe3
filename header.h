@@ -50,7 +50,7 @@ t_station tri_station(t_sommet info_sommet);
 void afficher_station (t_station info_station);
 void liberer_memoire_station (t_station info_station);
 
-
+void organiser_taches_dans_stations(t_tache** taches_triees, int nbr_taches_triees, t_station* stations, int* nbr_stations, t_sommet info_sommet);
 void tri_topologique_recursif(t_tache* tache, int* index, t_tache** resultat);
 t_tache** tri_topologique(t_tache* taches, int nbr_taches, int* nbr_taches_triees);
 void trier_taches_selon_precedences(t_tache* taches, int nbr_taches);
