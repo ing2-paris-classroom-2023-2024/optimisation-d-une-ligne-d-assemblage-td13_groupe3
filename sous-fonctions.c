@@ -238,6 +238,18 @@ void repartir_taches_dans_stations(t_tache** taches_triees, int nbr_taches_triee
     for (int i = 0; i < nbr_taches_triees; i++) {
         t_tache* tache = taches_triees[i];
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+        // Flag indiquant si la tâche a été ajoutée à une station existante
+        bool ajout_station_existante = false;
+
+        // Parcourir les stations existantes pour vérifier si la tâche peut être ajoutée à l'une d'elles
+        for (int j = 0; j < *nbr_stations; ++j) {
+            t_station* station = &stations[j];
+            bool ajout_possible = true;
+=======
+>>>>>>> Stashed changes
         // Vérifier si la tâche peut être ajoutée à la station actuelle
         if (peut_ajouter_tache(stations, index_station, tache)) {
             // Ajouter la tâche à la station
@@ -250,6 +262,10 @@ void repartir_taches_dans_stations(t_tache** taches_triees, int nbr_taches_triee
             index_station++;
         }
     }
+<<<<<<< Updated upstream
+=======
+>>>>>>> df2bfbc011a08598b80a0b0e21397f14ffb83b13
+>>>>>>> Stashed changes
 
     // Affichage des stations
     printf("\nStations :\n");
@@ -276,6 +292,7 @@ bool peut_ajouter_tache(t_station* stations, int index_station, t_tache* tache) 
             // Vérifier les précédences avec les tâches déjà présentes dans la station
             if (verifier_precedences_station(&stations[i], tache)) {
                 return true;
+<<<<<<< Updated upstream
             }
         }
     }
@@ -314,6 +331,111 @@ bool verifier_precedences_station(t_station* station, t_tache* tache) {
     return true; // Toutes les précédences sont satisfaites
 }
 
+=======
+            }
+<<<<<<< HEAD
+
+            // Vérifier si toutes les tâches précédentes sont dans la station actuelle ou dans des stations antérieures
+            for (int k = 0; k < tache->nbr_total_taches_precedentes; ++k) {
+                t_tache* tache_precedente = tache->taches_precedentes[k];
+                bool precedente_presente = false;
+
+                // Rechercher la tâche précédente dans la station actuelle
+                for (int l = 0; l < station->nbr_taches_total; ++l) {
+                    if (tache_precedente->identifiant == station->tache[l].identifiant) {
+                        precedente_presente = true;
+                        break;
+                    }
+                }
+
+                // Si la tâche précédente n'est pas dans la station actuelle, vérifier les stations antérieures
+                if (!precedente_presente) {
+                    for (int l = 0; l < j; ++l) {
+                        t_station* station_anterieure = &stations[l];
+                        for (int m = 0; m < station_anterieure->nbr_taches_total; ++m) {
+                            if (tache_precedente->identifiant == station_anterieure->tache[m].identifiant) {
+                                precedente_presente = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // Si une tâche précédente n'est pas présente, l'ajout n'est pas possible
+                if (!precedente_presente) {
+                    ajout_possible = false;
+                    break;
+                }
+            }
+
+            // Si toutes les conditions sont remplies, ajouter la tâche à la station existante
+            if (ajout_possible) {
+                t_tache* tache_station = &station->tache[station->nbr_taches_total];
+                *tache_station = *tache;
+                station->nbr_taches_total++;
+                ajout_station_existante = true;
+                break;
+            }
+        }
+
+        // Si la tâche n'a pas été ajoutée à une station existante, créer une nouvelle station
+        if (!ajout_station_existante) {
+            t_station nouvelle_station = info_station_tache(info_sommet);
+            t_tache* tache_station = &nouvelle_station.tache[nouvelle_station.nbr_taches_total];
+            *tache_station = *tache;
+            nouvelle_station.nbr_taches_total++;
+            stations[*nbr_stations] = nouvelle_station;
+            (*nbr_stations)++;
+        }
+    }
+
+    // Afficher les stations et leurs tâches associées
+    for (int i = 0; i < *nbr_stations; ++i) {
+        printf("Station %d:\n", i + 1);
+        for (int j = 0; j < stations[i].nbr_taches_total; ++j) {
+            printf("Tache : %d\n", stations[i].tache[j].identifiant);
+        }
+        printf("\n");
+=======
+        }
+    }
+    return false;
+}
+
+// Fonction pour vérifier les exclusions avec les tâches déjà présentes dans une station
+bool verifier_exclusions_station(t_station* station, t_tache* tache) {
+    for (int i = 0; i < station->nbr_taches_total; i++) {
+        // Allouer de la mémoire pour taches_exclusions si ce n'est pas déjà fait
+        station->tache[i].taches_exclusions = (t_tache**)malloc(station->tache[i].nbr_total_taches_exclusions * sizeof(t_tache*));
+
+        for (int j = 0; j < tache->nbr_total_taches_exclusions; j++) {
+            if (station->tache[i].identifiant == tache->taches_exclusions[j]->identifiant) {
+                return false; // La tâche est en exclusion avec une tâche déjà présente dans la station
+            }
+        }
+    }
+    return true; // Aucune exclusion détectée
+}
+
+// Fonction pour vérifier les précédences avec les tâches déjà présentes dans une station
+bool verifier_precedences_station(t_station* station, t_tache* tache) {
+    for (int i = 0; i < tache->nbr_total_taches_precedentes; i++) {
+        bool precedente_trouvee = false;
+        for (int j = 0; j < station->nbr_taches_total; j++) {
+            if (station->tache[j].identifiant == tache->taches_precedentes[i]->identifiant) {
+                precedente_trouvee = true;
+                break;
+            }
+        }
+        if (!precedente_trouvee) {
+            return false; // Une précédence n'est pas satisfaite
+        }
+>>>>>>> df2bfbc011a08598b80a0b0e21397f14ffb83b13
+    }
+    return true; // Toutes les précédences sont satisfaites
+}
+
+>>>>>>> Stashed changes
 // Fonction pour initialiser une station
 void initialiser_station(t_station* station, int temps_operation) {
     station->temps_operation = temps_operation;
