@@ -96,26 +96,28 @@ void liberer_memoire_sommet ( t_sommet info_sommet){
     }
     free(info_sommet.operations);
 }
-void ajouter_exclusions(t_sommet info_sommet, t_station* info_station) {
-    for (int i = 0; i < info_sommet.nbr_total_exclusions; i++) {
-        t_tache* tache_lue[2];
+void ajouter_exclusions(t_sommet info_sommet, t_station* info_station){
+    for(int i = 0; i < info_sommet.nbr_total_exclusions; i++){
+        t_tache *sommet_lu[2];
 
-        for (int j = 0; j < info_station->nbr_taches_total; j++) {
-            if (info_sommet.exclusions[i][0] == info_station->tache[j].identifiant) {
-                tache_lue[0] = &(info_station->tache[j]);
+        // Recherche des tâches correspondantes dans la station
+        for(int j = 0; j < info_station->nbr_taches_total; j++){
+            if(info_sommet.exclusions[i][0] == info_station->tache[j].identifiant){
+                sommet_lu[0] = &(info_station->tache[j]);
             }
-            if (info_sommet.exclusions[i][1] == info_station->tache[j].identifiant) {
-                tache_lue[1] = &(info_station->tache[j]);
+            if(info_sommet.exclusions[i][1] == info_station->tache[j].identifiant){
+                sommet_lu[1] = &(info_station->tache[j]);
             }
         }
 
-        tache_lue[0]->taches_exclusions = realloc(tache_lue[0]->taches_exclusions, (tache_lue[0]->nbr_total_taches_exclusions + 1) * sizeof(t_tache*));
-        tache_lue[0]->taches_exclusions[tache_lue[0]->nbr_total_taches_exclusions] = tache_lue[1];
-        tache_lue[0]->nbr_total_taches_exclusions++;
+        // Ajout des exclusions aux tâches correspondantes
+        sommet_lu[0]->taches_exclusions = realloc(sommet_lu[0]->taches_exclusions, (sommet_lu[0]->nbr_total_taches_exclusions + 1) * sizeof(t_tache* ));
+        sommet_lu[0]->taches_exclusions[sommet_lu[0]->nbr_total_taches_exclusions] = sommet_lu[1];
+        sommet_lu[0]->nbr_total_taches_exclusions++;
 
-        tache_lue[1]->taches_exclusions = realloc(tache_lue[1]->taches_exclusions, (tache_lue[1]->nbr_total_taches_exclusions + 1) * sizeof(t_tache*));
-        tache_lue[1]->taches_exclusions[tache_lue[1]->nbr_total_taches_exclusions] = tache_lue[0];
-        tache_lue[1]->nbr_total_taches_exclusions++;
+        sommet_lu[1]->taches_exclusions= realloc(sommet_lu[1]->taches_exclusions, (sommet_lu[1]->nbr_total_taches_exclusions + 1) * sizeof(t_tache* ));
+        sommet_lu[1]->taches_exclusions[sommet_lu[1]->nbr_total_taches_exclusions] = sommet_lu[0];
+        sommet_lu[1]->nbr_total_taches_exclusions++;
     }
 }
 
@@ -286,11 +288,15 @@ bool peut_ajouter_tache(t_station* stations, int index_station, t_tache* tache) 
 bool verifier_exclusions_station(t_station* station, t_tache* tache) {
     for (int i = 0; i < station->nbr_taches_total; i++) {
         // Allouer de la mémoire pour taches_exclusions si ce n'est pas déjà fait
-        station->tache[i].taches_exclusions = (t_tache**)malloc(station->tache[i].nbr_total_taches_exclusions * sizeof(t_tache*));
+        station->tache[i].taches_exclusions = realloc(station->tache[i].taches_exclusions, station->tache[i].nbr_total_taches_exclusions * sizeof(t_tache*));
 
         for (int j = 0; j < tache->nbr_total_taches_exclusions; j++) {
-            if (station->tache[i].identifiant == tache->taches_exclusions[j]->identifiant) {
-                return false; // La tâche est en exclusion avec une tâche déjà présente dans la station
+            int exclusion_id = tache->taches_exclusions[j]->identifiant;
+
+            for (int k = 0; k < station->nbr_taches_total; k++) {
+                if (station->tache[k].identifiant == exclusion_id) {
+                    return false; // La tâche est en exclusion avec une tâche déjà présente dans la station
+                }
             }
         }
     }
