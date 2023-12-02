@@ -5,13 +5,12 @@ int main() {
     t_sommet sommet = recuperer_info_sommet(info_identifiant);
     afficher_sommet(sommet);
     t_station info_station = tri_station(sommet);
-    printf("TESTETES");
-    afficher_station(info_station);
+    //afficher_station(info_station);
     trier_taches_selon_precedences(info_station.tache, info_station.nbr_taches_total);
 
 
     //Ce que j'ai ajouter
-
+/*
     // Appel de la fonction organiser_taches_dans_stations
     t_tache** taches_triees;
     int nbr_taches_triees;
@@ -27,10 +26,49 @@ int main() {
         free(taches_triees[i]);
     }
     free(taches_triees);
+*/
 
+
+
+
+    // Créer un tableau de tâches à partir des informations du sommet
+    t_tache* taches = malloc(sommet.nbr_total_precedences * sizeof(t_tache));
+    for (int i = 0; i < sommet.nbr_total_precedences; i++) {
+        taches[i].identifiant = sommet.precedences[i][0];
+        taches[i].poids = 0; // Vous devez définir le poids selon vos besoins
+        taches[i].visite = false;
+        // Copier les exclusions depuis sommet.exclusions[i]
+        taches[i].taches_exclusions = malloc(sommet.nbr_total_exclusions * sizeof(t_tache*));
+        for (int j = 0; j < sommet.nbr_total_exclusions; j++) {
+            // Vous devez trouver la tâche correspondante dans le tableau taches
+            // et l'assigner à taches[i].taches_exclusions[j]
+        }
+        taches[i].nbr_total_taches_exclusions = sommet.nbr_total_exclusions;
+        // Copier les précédences depuis sommet.precedences[i]
+        taches[i].taches_precedentes = malloc(sommet.nbr_total_precedences * sizeof(t_tache*));
+        for (int j = 0; j < sommet.nbr_total_precedences; j++) {
+            // Vous devez trouver la tâche correspondante dans le tableau taches
+            // et l'assigner à taches[i].taches_precedentes[j]
+        }
+        taches[i].nbr_total_taches_precedentes = sommet.nbr_total_precedences;
+    }
+
+    // Trier les tâches selon les précédences
+    //trier_taches_selon_precedences(taches, sommet.nbr_total_precedences);
+
+    // Répartir les tâches dans les stations
+    int nbr_stations;
+    repartir_taches_dans_stations(&taches, sommet.nbr_total_precedences, sommet.temps_operation, &nbr_stations);
+
+    // Libérer la mémoire allouée
+    for (int i = 0; i < sommet.nbr_total_precedences; i++) {
+        free(taches[i].taches_exclusions);
+        free(taches[i].taches_precedentes);
+    }
+    free(taches);
 //Fin de mon ajout dans le main
 
     liberer_memoire_sommet(sommet);
-    liberer_memoire_station ( info_station);
+
     return 0;
 }

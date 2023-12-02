@@ -48,11 +48,22 @@ void liberer_memoire_sommet ( t_sommet info_sommet);
 
 t_station tri_station(t_sommet info_sommet);
 void afficher_station (t_station info_station);
-void liberer_memoire_station (t_station info_station);
+
 
 void organiser_taches_dans_stations(t_tache** taches_triees, int nbr_taches_triees, t_station* stations, int* nbr_stations, t_sommet info_sommet);
 void tri_topologique_recursif(t_tache* tache, int* index, t_tache** resultat);
 t_tache** tri_topologique(t_tache* taches, int nbr_taches, int* nbr_taches_triees);
 void trier_taches_selon_precedences(t_tache* taches, int nbr_taches);
+
+
+void repartir_taches_dans_stations(t_tache** taches_triees, int nbr_taches_triees, int temps_operation, int* nbr_stations);
+bool peut_ajouter_tache(t_station* stations, int index_station, t_tache* tache);
+bool verifier_exclusions_station(t_station* station, t_tache* tache);
+bool verifier_precedences_station(t_station* station, t_tache* tache);
+void initialiser_station(t_station* station, int temps_operation);
+void ajouter_tache_a_station(t_station* station, t_tache* tache);
+void afficher_taches_station(t_station station);
+void liberer_memoire_station(t_station* station);
+
 
 #endif //ECELECAR_HEADER_H
