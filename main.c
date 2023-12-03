@@ -1,4 +1,5 @@
 #include "header.h"
+//Guyet Zahraoui Aich Langot projet S1 Ing2 TD 13
 
 int main() {
     char* info_identifiant = "base";
@@ -42,7 +43,6 @@ int main() {
     trier_taches_selon_precedences(info_station.tache, info_station.nbr_taches_total);
 
 */
-    //Ce que j'ai ajouter
 /*
     // Appel de la fonction organiser_taches_dans_stations
     t_tache** taches_triees;
@@ -70,18 +70,12 @@ int main() {
         taches[i].identifiant = sommet.precedences[i][0];
         taches[i].poids = 0; // Vous devez définir le poids selon vos besoins
         taches[i].visite = false;
-        // Copier les exclusions depuis sommet.exclusions[i]
         taches[i].taches_exclusions = malloc(sommet.nbr_total_exclusions * sizeof(t_tache*));
         for (int j = 0; j < sommet.nbr_total_exclusions; j++) {
-            // Vous devez trouver la tâche correspondante dans le tableau taches
-            // et l'assigner à taches[i].taches_exclusions[j]
         }
         taches[i].nbr_total_taches_exclusions = sommet.nbr_total_exclusions;
-        // Copier les précédences depuis sommet.precedences[i]
         taches[i].taches_precedentes = malloc(sommet.nbr_total_precedences * sizeof(t_tache*));
         for (int j = 0; j < sommet.nbr_total_precedences; j++) {
-            // Vous devez trouver la tâche correspondante dans le tableau taches
-            // et l'assigner à taches[i].taches_precedentes[j]
         }
         taches[i].nbr_total_taches_precedentes = sommet.nbr_total_precedences;
     }
