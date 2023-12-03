@@ -24,8 +24,9 @@ int main() {
 
     int couleurs[MAX_OPERATIONS + 1];
     colorerGraphe(&graphe, couleurs);
-    //verifierEtAjouterNouvelleStation(info_sommet, &info_station, &nbr_stations);
     afficherStations(&graphe, couleurs);
+    int* nbr_stations;
+    verifierEtAjouterNouvelleStation(info_sommet, &info_station, nbr_stations);
 
     // Libérer la mémoire
     liberer_memoire_sommet(info_sommet);
