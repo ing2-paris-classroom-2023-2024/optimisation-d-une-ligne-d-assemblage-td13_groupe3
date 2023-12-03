@@ -5,6 +5,7 @@ int main() {
     t_sommet info_sommet = recuperer_info_sommet(info_identifiant);
     afficher_sommet(info_sommet);
     t_station info_station = tri_station(info_sommet);
+    afficher_station(info_station);
     trier_taches_selon_precedences(info_station.tache, info_station.nbr_taches_total);
 
 
