@@ -2,13 +2,44 @@
 
 int main() {
     char* info_identifiant = "base";
+    t_sommet info_sommet = recuperer_info_sommet(info_identifiant);
+    afficher_sommet(info_sommet);
+    t_station info_station = tri_station(info_sommet);
+    trier_taches_selon_precedences(info_station.tache, info_station.nbr_taches_total);
+
+
+    t_graph graphe;
+    initGraph(&graphe, info_sommet.nbr_total_operations);
+
+    // Ajouter les arêtes d'exclusion au graphe
+    for (int i = 0; i < info_sommet.nbr_total_exclusions; i++) {
+        ajouterArrete(&graphe, info_sommet.exclusions[i][0], info_sommet.exclusions[i][1]);
+    }
+
+    // Ajouter les arêtes de précédence au graphe
+    for (int i = 0; i < info_sommet.nbr_total_precedences; i++) {
+        ajouterArrete(&graphe, info_sommet.precedences[i][0], info_sommet.precedences[i][1]);
+    }
+
+    int couleurs[MAX_OPERATIONS + 1];
+    colorerGraphe(&graphe, couleurs);
+    afficherStations(&graphe, couleurs);
+    afficherStationsExclusion(couleurs,info_sommet.nbr_total_operations, &info_station);
+
+    // Libérer la mémoire
+    liberer_memoire_sommet(info_sommet);
+    free(info_station.tache);
+
+    return 0;
+    /*
+    char* info_identifiant = "base";
     t_sommet sommet = recuperer_info_sommet(info_identifiant);
     afficher_sommet(sommet);
     t_station info_station = tri_station(sommet);
     //afficher_station(info_station);
     trier_taches_selon_precedences(info_station.tache, info_station.nbr_taches_total);
 
-
+*/
     //Ce que j'ai ajouter
 /*
     // Appel de la fonction organiser_taches_dans_stations
@@ -30,7 +61,7 @@ int main() {
 
 
 
-
+/*
     // Créer un tableau de tâches à partir des informations du sommet
     t_tache* taches = malloc(sommet.nbr_total_precedences * sizeof(t_tache));
     for (int i = 0; i < sommet.nbr_total_precedences; i++) {
@@ -70,5 +101,5 @@ int main() {
 
     liberer_memoire_sommet(sommet);
 
-    return 0;
+    return 0;*/
 }

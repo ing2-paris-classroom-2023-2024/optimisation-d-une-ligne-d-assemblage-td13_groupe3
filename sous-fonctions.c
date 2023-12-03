@@ -346,3 +346,147 @@ void afficher_taches_station(t_station station) {
 void liberer_memoire_station(t_station* station) {
     free(station->tache);
 }
+
+
+// Initialiser le graphe
+void initGraph(t_graph *graphe, int numSommets) {
+    graphe->numSommets = numSommets;
+    for (int i = 1; i <= numSommets; i++) {
+        for (int j = 1; j <= numSommets; j++) {
+            graphe->adjMatrice[i][j] = 0;
+        }
+    }
+}
+
+// Ajouter une arête au graphe
+void ajouterArrete(t_graph *graphe, int src, int dest) {
+    graphe->adjMatrice[src][dest] = 1;
+    graphe->adjMatrice[dest][src] = 1;  // Pour un graphe non orienté
+}
+
+// Trouver la première couleur disponible
+int trouverCouleurDisponible(bool *usedColors, int numColors) {
+    for (int i = 0; i < numColors; i++) {
+        if (!usedColors[i]) {
+            return i;
+        }
+    }
+    return numColors; // Retourner un nouveau numéro de couleur si nécessaire
+}
+
+// Algorithme de coloration glouton
+void colorerGraphe(t_graph *graphe, int *couleurs) {
+    for (int i = 1; i <= graphe->numSommets; i++) {
+        couleurs[i] = -1; // Initialement, aucune couleur n'est attribuée
+    }
+
+    bool couleursUtilisees[MAX_OPERATIONS + 1]; // Marqueur pour les couleurs utilisées
+    for (int u = 1; u <= graphe->numSommets; u++) {
+        for (int i = 0; i <= graphe->numSommets; i++) {
+            couleursUtilisees[i] = false;
+        }
+
+        // Marquer les couleurs utilisées par les voisins
+        for (int v = 1; v <= graphe->numSommets; v++) {
+            if (graphe->adjMatrice[u][v] && couleurs[v] != -1) {
+                couleursUtilisees[couleurs[v]] = true;
+            }
+        }
+
+        // Trouver la première couleur disponible
+        couleurs[u] = trouverCouleurDisponible(couleursUtilisees, MAX_OPERATIONS);
+    }
+}
+
+// Afficher les résultats
+void afficherStations(t_graph *graphe, int *couleurs) {
+    // Trouver le numéro de station le plus élevé assigné
+    int maxStation = 0;
+    for (int i = 1; i <= graphe->numSommets; i++) {
+        if (couleurs[i] > maxStation) {
+            maxStation = couleurs[i];
+        }
+    }
+
+    printf("Repartition des operations par station :\n");
+    for (int station = 0; station <= maxStation; station++) {
+        printf("Station %d: ", station + 1);
+        for (int i = 1; i <= graphe->numSommets; i++) {
+            if (couleurs[i] == station) {
+                printf("%d ", i);
+            }
+        }
+        printf("\n");
+    }
+}
+
+// Initialiser le graphe
+void initGraphExclusion(t_graph *graphe, int numSommets) {
+    graphe->numSommets = numSommets;
+    for (int i = 1; i <= numSommets; i++) {
+        for (int j = 1; j <= numSommets; j++) {
+            graphe->adjMatrice[i][j] = 0;
+        }
+    }
+}
+
+
+// Afficher les résultats
+void afficherStationsExclusion(int *couleurs, int numOperations, t_station* info_station) {
+    // Trouver le numéro de station le plus élevé assigné
+    int maxStation = 0;
+    for (int i = 1; i <= numOperations; i++) {
+        if (couleurs[i] > maxStation) {
+            maxStation = couleurs[i];
+        }
+    }
+    printf("Repartition des operations par station :\n");
+    for (int station = 0; station <= maxStation; station++) {
+        printf("Station %d: ", station+1);
+        for (int i = 1; i <= numOperations; i++) {
+            if (couleurs[i] == station) {
+                printf("%d ", info_station->tache[i].identifiant);
+            }
+        }
+        printf("\n");
+    }
+}
+// Modifier la fonction getRealTaskNumber
+int getRealTaskNumber(t_station* info_station, int index) {
+    if (index >= 0 && index < info_station->nbr_taches_total) {
+        return info_station->tache[index].identifiant;
+    }
+    return -1; // En cas d'erreur
+}
+
+// Modifier la fonction afficherExclusion
+void afficherExclusion(const char* path, t_station* info_station) {
+    t_graph graphe;
+    FILE *file = fopen(path, "r");
+    if (file == NULL) {
+        perror("Erreur lors de l'ouverture du fichier");
+        return;
+    }
+
+    int numSommets = MAX_OPERATIONS;
+
+    initGraphExclusion(&graphe, numSommets); // Initialiser le graphe avec le nombre de sommets
+
+    PaireExclusion exclusion;
+    while (fscanf(file, "%d %d", &exclusion.op1, &exclusion.op2) == 2) {
+        ajouterArrete(&graphe, exclusion.op1, exclusion.op2);
+    }
+
+    fclose(file);
+
+    int couleurs[MAX_OPERATIONS + 1];
+    colorerGraphe(&graphe, couleurs);
+
+    // Affichage des résultats avec les vrais numéros d'identifiant
+    printf("Repartition des operations par station (Avec vrais numeros d'identifiant) :\n");
+    for (int i = 0; i < numSommets; i++) {
+        int realTaskNumber = getRealTaskNumber(info_station, i);
+        printf("Operation %d: Station %d\n", realTaskNumber, couleurs[realTaskNumber] + 1);
+    }
+}
+
