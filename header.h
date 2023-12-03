@@ -82,11 +82,11 @@ void ajouter_tache_a_station(t_station* station, t_tache* tache);
 void afficher_taches_station(t_station station);
 void liberer_memoire_station(t_station* station);
 
-void initGraphExclusion(t_graph *graphe, int numSommets);
 void colorerGraphe(t_graph *graphe, int *couleurs);
 int trouverCouleurDisponible(bool *usedColors, int numColors);
 void ajouterArrete(t_graph *graphe, int src, int dest);
 void afficherStations(t_graph *graphe, int *couleurs);
-void initGraph(t_graph *graphe, int numSommets);
-void afficherStationsExclusion(int *couleurs, int numOperations, t_station* info_station);
+void initialisationGraphe(t_graph *graphe, int numSommets);
+int calculerTempsCycle(t_station* station);
+void verifierEtAjouterNouvelleStation(t_sommet info_sommet, t_station** stations, int* nbr_stations);
 #endif //ECELECAR_HEADER_H

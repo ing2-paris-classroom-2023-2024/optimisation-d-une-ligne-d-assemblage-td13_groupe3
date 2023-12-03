@@ -364,7 +364,7 @@ void liberer_memoire_station(t_station* station) {
 
 
 // Initialiser le graphe
-void initGraph(t_graph *graphe, int numSommets) {
+void initialisationGraphe(t_graph *graphe, int numSommets) {
     graphe->numSommets = numSommets;
     for (int i = 1; i <= numSommets; i++) {
         for (int j = 1; j <= numSommets; j++) {
@@ -434,37 +434,51 @@ void afficherStations(t_graph *graphe, int *couleurs) {
         printf("\n");
     }
 }
+/*
+printf("Repartition des operations par station  :\n");
+for (int station = 0; station < maxStation; station++) {
+int tempsCycle = calculerTempsCycle(&stations[station]);
+printf("Station %d (Temps de cycle : %d) : ", station + 1, tempsCycle);
 
-// Initialiser le graphe
-void initGraphExclusion(t_graph *graphe, int numSommets) {
-    graphe->numSommets = numSommets;
-    for (int i = 1; i <= numSommets; i++) {
-        for (int j = 1; j <= numSommets; j++) {
-            graphe->adjMatrice[i][j] = 0;
+for (int i = 0; i < stations[station].nbr_taches_total; i++) {
+printf("%d ", stations[station].tache[i].identifiant);
+}
+printf("\n");
+}
+}*/
+// Fonction pour calculer le temps de cycle d'une station
+int calculerTempsCycle(t_station* station) {
+    int tempsCycle = 0;
+    for (int i = 0; i < station->nbr_taches_total; i++) {
+        tempsCycle += station->tache[i].poids;
+    }
+    return tempsCycle;
+}
+
+// Fonction pour vérifier et ajouter une nouvelle station si nécessaire
+void verifierEtAjouterNouvelleStation(t_sommet info_sommet, t_station** stations, int* nbr_stations) {
+    int tempsCycle = calculerTempsCycle(*stations);
+
+    if (tempsCycle > 10000) {
+        // Créer une nouvelle station et y ajouter les tâches
+        t_station nouvelleStation;
+        initialiser_station(&nouvelleStation, info_sommet.temps_operation);
+
+        // Ajouter les tâches de la station précédente à la nouvelle station
+        for (int i = 0; i < (*stations)[0].nbr_taches_total; i++) {
+            ajouter_tache_a_station(&nouvelleStation, &(*stations)[0].tache[i]);
         }
+
+        // Libérer la mémoire de la station précédente
+        liberer_memoire_station(*stations);
+
+        // Mettre à jour la liste des stations
+        *stations = realloc(*stations, (*nbr_stations + 1) * sizeof(t_station));
+        (*stations)[*nbr_stations] = nouvelleStation;
+        (*nbr_stations)++;
     }
 }
 
 
-// Afficher les résultats
-void afficherStationsExclusion(int *couleurs, int numOperations, t_station* info_station) {
-    // Trouver le numéro de station le plus élevé assigné
-    int maxStation = 0;
-    for (int i = 1; i <= numOperations; i++) {
-        if (couleurs[i] > maxStation) {
-            maxStation = couleurs[i];
-        }
-    }
-    printf("Repartition des operations par station :\n");
-    for (int station = 0; station <= maxStation; station++) {
-        printf("Station %d: ", station+1);
-        for (int i = 1; i <= numOperations; i++) {
-            if (couleurs[i] == station) {
-                printf("%d ", info_station->tache[i].identifiant);
-            }
-        }
-        printf("\n");
-    }
-}
 
 

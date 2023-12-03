@@ -10,7 +10,7 @@ int main() {
 
 
     t_graph graphe;
-    initGraph(&graphe, info_sommet.nbr_total_operations);
+    initialisationGraphe(&graphe, info_sommet.nbr_total_operations);
 
     // Ajouter les arêtes d'exclusion au graphe
     for (int i = 0; i < info_sommet.nbr_total_exclusions; i++) {
@@ -24,8 +24,8 @@ int main() {
 
     int couleurs[MAX_OPERATIONS + 1];
     colorerGraphe(&graphe, couleurs);
+    //verifierEtAjouterNouvelleStation(info_sommet, &info_station, &nbr_stations);
     afficherStations(&graphe, couleurs);
-    afficherStationsExclusion(couleurs,info_sommet.nbr_total_operations, &info_station);
 
     // Libérer la mémoire
     liberer_memoire_sommet(info_sommet);
